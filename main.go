@@ -11,7 +11,7 @@ type HomeData struct {
 	VideoSrc string
 }
 
-var templates = template.Must(template.ParseFiles("templates/index.html"))
+var templates = template.Must(template.ParseFiles("index.html"))
 
 func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
