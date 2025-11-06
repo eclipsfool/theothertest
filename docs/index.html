@@ -22,7 +22,7 @@
             background: var(--bg);
         }
 
-        /* Логотип Telegram как обычное изображение без фонового цвета (путь абсолютный) */
+        /* Логотип Telegram как обычное изображение без фонового цвета (путь относительный) */
         header {
             position: fixed;
             top: 14px;
@@ -142,15 +142,15 @@
 <!-- Верхняя панель: логотип Telegram как обычное изображение (без фона) -->
 <header aria-label="Социальная навигация">
     <a class="telegram-link" href="https://t.me/Sharkosic" target="_blank" rel="noopener" aria-label="Telegram">
-        <!-- абсолютный путь к изображению логотипа Telegram -->
-        <img class="telegram-logo" src="/static/images/telegram_logo.png" alt="Telegram" width="84" height="84">
+        <!-- относительный путь к изображению логотипа Telegram -->
+        <img class="telegram-logo" src="static/images/telegram_circle.png" alt="Telegram" width="84" height="84">
     </a>
 </header>
 
 <!-- Видео (локальное) -->
 <section id="bg-video" aria-label="Наше видео">
-    <video autoplay muted loop playsinline poster="/static/images/poster.png">
-        <source src="/static/videos/trailer.mp4" type="video/mp4" />
+    <video autoplay muted loop playsinline>
+        <source src="static/videos/trailer.mp4" type="video/mp4" />
         Ваш браузер не поддерживает видео.
     </video>
 </section>
@@ -169,7 +169,7 @@
             <p>Delve into the dark depths of a forgotten kingdom. Explore ancient corridors, uncover secrets, и battle mysterious forces to restore balance to the world.</p>
         </div>
         <div class="image">
-            <img src="/static/images/shot1.png" alt="Скриншот: древний зал"
+            <img src="static/images/shot1.png" alt="Скриншот: древний зал"
                  style="width:100%; height:auto; border-radius:8px; display:none;"
                  onload="this.style.display='block'; this.nextElementSibling.style.display='none';"
             >
@@ -185,7 +185,7 @@
 
     <div class="block alt" aria-label="Описание и скриншот чередование">
         <div class="image">
-            <img src="/static/images/shot2.png" alt="Скриншот: бой в тёмном зале"
+            <img src="static/images/shot2.png" alt="Скриншот: бой в тёмном зале"
                  style="width:100%; height:auto; border-radius:8px; display:none;"
                  onload="this.style.display='block'; this.nextElementSibling.style.display='none';"
             >
@@ -206,18 +206,17 @@
     </div>
 </section>
 
-<!-- Диагностическая панель (выводит статусы загрузки медиа) -->
+<!-- Диагностическая панель -->
 <div id="media-status" aria-live="polite">Загрузка ресурсов...</div>
 
-<!-- Скрипт диагностики загрузки медиа и фикса путей -->
 <script>
     (function() {
-        // Проверяем доступность меди-ресурсов по корневым путям
+        // Проверяем доступность меди-ресурсов по корневым путям (GH Pages)
         const resources = [
-            { name: 'video trailer', url: '/static/videos/trailer.mp4' },
-            { name: 'image shot1', url: '/static/images/shot1.png' },
-            { name: 'image shot2', url: '/static/images/shot2.png' },
-            { name: 'telegram logo', url: '/static/images/telegram_logo.png' }
+            { name: 'video trailer', url: 'static/videos/trailer.mp4' },
+            { name: 'image shot1', url: 'static/images/shot1.png' },
+            { name: 'image shot2', url: 'static/images/shot2.png' },
+            { name: 'telegram logo', url: 'static/images/telegram_circle.png' }
         ];
         const statusEl = document.getElementById('media-status');
         function log(msg) {
@@ -226,7 +225,6 @@
             }
         }
 
-        // Попробуем HEAD-запросами определить доступность файлов
         resources.forEach(res => {
             fetch(res.url, { method: 'HEAD' })
                 .then(response => {
