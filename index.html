@@ -22,7 +22,7 @@
             background: var(--bg);
         }
 
-        /* Логотип Telegram как обычное изображение без фонового цвета (путь относительный) */
+        /* Логотип Telegram как обычное изображение без фонового цвета (путь абсолютный) */
         header {
             position: fixed;
             top: 14px;
@@ -83,7 +83,7 @@
             grid-template-columns: 1fr 1fr;
             gap: 120px;
             align-items: center;
-            padding: 60px 60px; /* горизонтальные отступы внутри блока */
+            padding: 60px 60px;
             border-radius: 12px;
             background: var(--block);
             width: 100vw;
@@ -119,20 +119,37 @@
             .block .text { font-size: 20px; }
             .block h3 { font-size: 26px; }
         }
+
+        /* Диагностическая панель внизу слева */
+        #media-status {
+            position: fixed;
+            left: 12px;
+            bottom: 12px;
+            max-width: 420px;
+            background: rgba(0,0,0,.75);
+            color: #fff;
+            font-family: monospace;
+            font-size: 12px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            z-index: 9999;
+            pointer-events: none;
+            line-height: 1.4;
+        }
     </style>
 </head>
 <body>
 <!-- Верхняя панель: логотип Telegram как обычное изображение (без фона) -->
 <header aria-label="Социальная навигация">
     <a class="telegram-link" href="https://t.me/Sharkosic" target="_blank" rel="noopener" aria-label="Telegram">
-        <!-- относительный путь к изображению логотипа Telegram (png/jpg/svg) -->
-        <img class="telegram-logo" src="/static/images/telegram_circle.png" alt="Telegram" width="84" height="84">
+        <!-- абсолютный путь к изображению логотипа Telegram -->
+        <img class="telegram-logo" src="/static/images/telegram_logo.png" alt="Telegram" width="84" height="84">
     </a>
 </header>
 
 <!-- Видео (локальное) -->
 <section id="bg-video" aria-label="Наше видео">
-    <video autoplay muted loop playsinline>
+    <video autoplay muted loop playsinline poster="/static/images/poster.png">
         <source src="/static/videos/trailer.mp4" type="video/mp4" />
         Ваш браузер не поддерживает видео.
     </video>
@@ -188,5 +205,42 @@
         </div>
     </div>
 </section>
+
+<!-- Диагностическая панель (выводит статусы загрузки медиа) -->
+<div id="media-status" aria-live="polite">Загрузка ресурсов...</div>
+
+<!-- Скрипт диагностики загрузки медиа и фикса путей -->
+<script>
+    (function() {
+        // Проверяем доступность меди-ресурсов по корневым путям
+        const resources = [
+            { name: 'video trailer', url: '/static/videos/trailer.mp4' },
+            { name: 'image shot1', url: '/static/images/shot1.png' },
+            { name: 'image shot2', url: '/static/images/shot2.png' },
+            { name: 'telegram logo', url: '/static/images/telegram_logo.png' }
+        ];
+        const statusEl = document.getElementById('media-status');
+        function log(msg) {
+            if (statusEl) {
+                statusEl.textContent = (statusEl.textContent ? statusEl.textContent + ' | ' : '') + msg;
+            }
+        }
+
+        // Попробуем HEAD-запросами определить доступность файлов
+        resources.forEach(res => {
+            fetch(res.url, { method: 'HEAD' })
+                .then(response => {
+                    if (response.ok) {
+                        log(res.name + ' OK (' + response.status + ')');
+                    } else {
+                        log(res.name + ' ERR ' + response.status);
+                    }
+                })
+                .catch(err => {
+                    log(res.name + ' LOAD ERROR (' + err + ')');
+                });
+        });
+    })();
+</script>
 </body>
 </html>
